@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public class UserHandler implements HttpHandler {
 
 //        System.out.println(path);
 //        System.out.println(method);
-        if(path.equals("/createUser") && method.equals("GET")) {// +
+        if(path.equals("/createUser") && method.equals("POST")) {// +
             handleCreateUser(exchange);
         }
         if(path.equals("/getUsers") && method.equals("GET")) {// +
