@@ -3,8 +3,7 @@ package org.example;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -17,7 +16,7 @@ public class UserHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         String method = exchange.getRequestMethod();
-
+        handleCORS(exchange);
         if(path.equals("/createUser") && method.equals("POST")) {// +
             handleCreateUser(exchange);
         }
@@ -38,25 +37,38 @@ public class UserHandler implements HttpHandler {
         OutputStream os = exchange.getResponseBody();
         os.close();
     }
-
+    private void handleCORS(HttpExchange exchange) {
+        // Allow requests from all origins
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        // Allow specific methods
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        // Allow specific headers
+        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "*");
+        // Allow credentials, if needed
+        exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");
+    }
     private void handleCreateUser(HttpExchange exchange) throws IOException {
-        String query =exchange.getRequestURI().getQuery();
-        Map<String, String> params = queryToMap(query);
 
-        String firstName = params.get("firstName");
-        String lastName = params.get("lastName");
-        String avatar = params.get("avatar");
-        String email = params.get("email");
+        InputStream requestBody = exchange.getRequestBody();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(requestBody));
+        String dataString = "";
+        String line;
+        while ((line = reader.readLine()) != null) {
+            dataString += line;
+        }
+        reader.close();
 
-        User user = new User(firstName, lastName, avatar, email);
+        User user = gson.fromJson(dataString, User.class);
+
         users.add(user);
         saveUsers();
-        String response = "User has been created successfully";
+        String response = "{\"message\": \"User has been created successfully\"}";
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
     }
+
 
     private void handleDeleteUser(HttpExchange exchange) throws IOException {
         String query =exchange.getRequestURI().getQuery();
@@ -132,10 +144,6 @@ public class UserHandler implements HttpHandler {
                 exchange.sendResponseHeaders(404,-1);
             }
 
-
-      //  }else {
-        //    exchange.sendResponseHeaders(405,-1);//method not allowed
-       // }
     }
     private Map<String, String> queryToMap(String query) {
         Map<String, String> result = new HashMap<>();
