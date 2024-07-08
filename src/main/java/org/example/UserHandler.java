@@ -18,8 +18,6 @@ public class UserHandler implements HttpHandler {
         String path = exchange.getRequestURI().getPath();
         String method = exchange.getRequestMethod();
 
-//        System.out.println(path);
-//        System.out.println(method);
         if(path.equals("/createUser") && method.equals("POST")) {// +
             handleCreateUser(exchange);
         }
@@ -45,13 +43,12 @@ public class UserHandler implements HttpHandler {
         String query =exchange.getRequestURI().getQuery();
         Map<String, String> params = queryToMap(query);
 
-        long id = Long.parseLong(params.get("id"));
         String firstName = params.get("firstName");
         String lastName = params.get("lastName");
         String avatar = params.get("avatar");
         String email = params.get("email");
 
-        User user = new User(id, firstName, lastName, avatar, email);
+        User user = new User(firstName, lastName, avatar, email);
         users.add(user);
         saveUsers();
         String response = "User has been created successfully";

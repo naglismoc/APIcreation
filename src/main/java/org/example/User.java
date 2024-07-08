@@ -2,16 +2,33 @@ package org.example;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Comparator;
+
+import static org.example.Main.users;
+
 public class User {
+    private static long idCounter = users.stream()
+            .filter(v -> v.getId() != users.stream().max(Comparator.comparingLong(User::getId))
+            .orElse(new User()).getId())
+            .map(User::getId)
+            .findFirst()
+            .orElse((long) 0);
     private long id;
-//    @SerializedName("first_name")
     private String firstName;
-//    @SerializedName("last_name")
     private String lastName;
     private String avatar;
     private String email;
 
     public User() {
+        id = ++idCounter;
+    }
+
+    public User(String firstName, String lastName, String avatar, String email) {
+        this.id = ++idCounter;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.avatar = avatar;
+        this.email = email;
     }
 
     public User(long id, String firstName, String lastName, String avatar, String email) {
