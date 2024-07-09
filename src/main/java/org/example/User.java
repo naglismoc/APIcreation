@@ -1,7 +1,5 @@
 package org.example;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Comparator;
 
 import static org.example.Main.users;

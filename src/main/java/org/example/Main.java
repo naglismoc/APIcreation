@@ -21,12 +21,9 @@ public class Main {
         server.createContext("/getUser",new UserHandler());
         server.createContext("/updateUser",new UserHandler());
         server.createContext("/deleteUser",new UserHandler());
-
         server.setExecutor(null);
         server.start();
     }
-
-
 
     public static void loadUsers(){
         try(FileReader reader = new FileReader("users.json")){
