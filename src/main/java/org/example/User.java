@@ -57,7 +57,6 @@ public class User {
         return id == user.id;
     }
 
-
     @Override
     public String toString() {
         return "User{" +
