@@ -6,9 +6,9 @@ import static org.example.Main.users;
 
 public class User {
     private static long idCounter = users.stream()
-            .filter(v -> v.getId() != users.stream().max(Comparator.comparingLong(User::getId))
-            .orElse(new User()).getId())
             .map(User::getId)
+            .filter(vId -> vId != users.stream().max(Comparator.comparingLong(User::getId))
+            .orElse(new User()).getId())
             .findFirst()
             .orElse((long) 0);
     private long id;
@@ -21,22 +21,6 @@ public class User {
         id = ++idCounter;
     }
 
-    public User(String firstName, String lastName, String avatar, String email) {
-        this.id = ++idCounter;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.avatar = avatar;
-        this.email = email;
-    }
-
-    public User(long id, String firstName, String lastName, String avatar, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.avatar = avatar;
-        this.email = email;
-    }
-
     public long getId() {
         return id;
     }
@@ -45,32 +29,16 @@ public class User {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setEmail(String email) {
@@ -88,6 +56,7 @@ public class User {
         User user = (User) obj;
         return id == user.id;
     }
+
 
     @Override
     public String toString() {
